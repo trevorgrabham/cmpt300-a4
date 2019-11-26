@@ -30,7 +30,7 @@ COMMON PARAMETERS
     bufbytes - maximum number of bytes to read
 
 FUNCTION DESCRIPTIONS
-
+ 
 int file_read(char *path, int offset, void *buffer, size_t bufbytes);
     Reads bytes from a file into the buffer.
     Return value: >=0 number of bytes read, <0 ERROR (see above)
