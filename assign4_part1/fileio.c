@@ -80,17 +80,41 @@ int file_create(char *path, char *pattern, int repeatcount)
 
 int file_remove(char *path)
 {
-    return IOERR_NOT_YET_IMPLEMENTED;
+    int res = remove(path);
+    if(res){
+      return IOERR_INVALID_PATH;
+    }
+    return res;
 }
 
 int dir_create(char *path)
 {
-    return IOERR_NOT_YET_IMPLEMENTED;
+    int res = mkdir(path,0777);
+    if(res){
+      return IOERR_POSIX;
+    }
+    return res;
 }
 
 int dir_list(char *path, void *buffer, size_t bufbytes)
 {
-    return IOERR_NOT_YET_IMPLEMENTED;
+    DIR* directory = opendir(path);
+    if(!directory){
+      return IOERR_INVALID_PATH;
+    }
+    struct dirent* entry;
+    entry = readdir(directory);
+    while(entry){
+      bufbytes -= sizeof(entry->d_name);
+      if(bufbytes >= 0){
+        sprintf((char*)buffer, "%s\n", entry->d_name);
+      } else{
+        closedir(directory);
+        return IOERR_BUFFER_TOO_SMALL;
+      }
+    }
+    closedir(directory);
+    return 0;
 }
 
 
