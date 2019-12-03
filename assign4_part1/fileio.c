@@ -20,8 +20,9 @@ int file_read(char *path, int offset, void *buffer, size_t bufbytes)
       return IOERR_INVALID_ARGS;
     FILE* file_ptr;
     file_ptr = fopen(path, "r");
-    if(!file_ptr)
+    if(!file_ptr){
       return IOERR_INVALID_PATH;
+    }
     long int init = ftell(file_ptr);
     fseek(file_ptr, offset, SEEK_SET);
     fgets(buffer, bufbytes, file_ptr);
