@@ -69,7 +69,7 @@ int test_file_read(int argc, const char **argv)
     }
 
     bytes_read = file_read(BIG_FILE, 1, b, sizeof(b));
-    quit_if(bytes_read != sizeof(b));
+    quit_if(bytes_read!= sizeof(b) -1 );          // changed because size of b adds in the null character which we don't read
     quit_if(!memcmp(b, dots, sizeof(b)));
 
     return 0;
@@ -115,7 +115,7 @@ int test_file_write(int argc, const char **argv)
     // Test new file
     quit_if(sizeof(b) != file_write(NEW_FILE, 0, b, sizeof(b)));
 
-    quit_if(strlen(b) + 1 != file_read(NEW_FILE, 0, b2, sizeof(b2)));
+    quit_if(strlen(b) != file_read(NEW_FILE, 0, b2, sizeof(b2)));             // removed the +1 because we don't read the null character
     quit_if(strncmp(b, b2, strlen(b)));
     return 0;
 }

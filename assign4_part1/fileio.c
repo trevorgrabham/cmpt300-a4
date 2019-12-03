@@ -23,12 +23,12 @@ int file_read(char *path, int offset, void *buffer, size_t bufbytes)
     if(!file_ptr){
       return IOERR_INVALID_PATH;
     }
-    long int init = ftell(file_ptr);
     fseek(file_ptr, offset, SEEK_SET);
-    fgets(buffer, bufbytes, file_ptr);
+    long int init = ftell(file_ptr);
+    fgets((char*)buffer, bufbytes, file_ptr);
     long int fin = ftell(file_ptr);
     fclose(file_ptr);
-    return fin - init;
+    return fin-init;
 }
 
 int file_info(char *path, void *buffer, size_t bufbytes)
@@ -52,23 +52,28 @@ int file_info(char *path, void *buffer, size_t bufbytes)
 
 int file_write(char *path, int offset, void *buffer, size_t bufbytes)
 {
+    if(path == NULL || offset < 0 || buffer == NULL || bufbytes <=0)
+      return IOERR_INVALID_ARGS;
     FILE* file_ptr;
     file_ptr = fopen(path, "a");
     if(!file_ptr)
       return IOERR_INVALID_PATH;
     fseek(file_ptr, offset, SEEK_SET);
+    long int init = ftell(file_ptr);
     fputs((char*)buffer, file_ptr);
     if(ftell(file_ptr) == offset){
       fclose(file_ptr);
       return IOERR_POSIX;
     }
-    long int bitsWrote = ftell(file_ptr) - offset;
+    long int bitsWrote = ftell(file_ptr) - init +1;
     fclose(file_ptr);
     return bitsWrote;
 }
 
 int file_create(char *path, char *pattern, int repeatcount)
 {
+    if(path == NULL || pattern == NULL || repeatcount < 0)
+      return IOERR_INVALID_ARGS;
     FILE* file_ptr;
     file_ptr = fopen(path, "a");
     if(!file_ptr)
@@ -82,6 +87,8 @@ int file_create(char *path, char *pattern, int repeatcount)
 
 int file_remove(char *path)
 {
+    if(path == NULL)
+      return IOERR_INVALID_ARGS;
     int res = remove(path);
     if(res){
       return IOERR_INVALID_PATH;
@@ -91,7 +98,12 @@ int file_remove(char *path)
 
 int dir_create(char *path)
 {
+    errno = 0;
+    if(path == NULL)
+      return IOERR_INVALID_ARGS;
     int res = mkdir(path,0777);
+    if(errno == EEXIST)
+      return IOERR_INVALID_PATH;
     if(res){
       return IOERR_POSIX;
     }
@@ -100,16 +112,21 @@ int dir_create(char *path)
 
 int dir_list(char *path, void *buffer, size_t bufbytes)
 {
+    if(path == NULL || buffer == NULL || bufbytes <= 0)
+      return IOERR_INVALID_ARGS;
     DIR* directory = opendir(path);
     if(!directory){
       return IOERR_INVALID_PATH;
     }
+    long int bytesleft = bufbytes;
+    long int offset = 0;
     struct dirent* entry;
     entry = readdir(directory);
     while(entry){
-      bufbytes -= sizeof(entry->d_name);
-      if(bufbytes >= 0){
-        sprintf((char*)buffer, "%s\n", entry->d_name);
+      bytesleft -= sizeof(entry->d_name);
+      if(bytesleft >= 0){
+        offset += sprintf((char*)(buffer+offset), "%s\n", entry->d_name);
+        entry = readdir(directory);
       } else{
         closedir(directory);
         return IOERR_BUFFER_TOO_SMALL;

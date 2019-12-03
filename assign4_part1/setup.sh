@@ -15,10 +15,10 @@ touch  -a -d 20050103 ./testdata/oldfile.txt
 
 if [ ! -f /tmp/bigtestscratchfile2forLMP1 ] ; then
 	echo "Creating large file  (first time only)"
-	cat /usr/lib/*.so >/tmp/bigtestscratchfile2forLMP1
+	cat /usr/lib/*.so* >/tmp/bigtestscratchfile2forLMP1
 	chmod 644 /tmp/bigtestscratchfile2forLMP1
 fi
 
-ln -s /tmp/bigtestscratchfile2forLMP1  ./testdata/bigfile 
+ln -s /tmp/bigtestscratchfile2forLMP1  ./testdata/bigfile
 
 exit 0
