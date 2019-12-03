@@ -16,19 +16,18 @@
 
 int file_read(char *path, int offset, void *buffer, size_t bufbytes)
 {
-    if(path == NULL || buffer == NULL || bufbytes <= 0)
+    if(path == NULL || buffer == NULL || bufbytes <= 0 || offset < 0)
       return IOERR_INVALID_ARGS;
     FILE* file_ptr;
     file_ptr = fopen(path, "r");
     if(!file_ptr)
       return IOERR_INVALID_PATH;
+    long int init = ftell(file_ptr);
     fseek(file_ptr, offset, SEEK_SET);
     fgets(buffer, bufbytes, file_ptr);
+    long int fin = ftell(file_ptr);
     fclose(file_ptr);
-    if(!buffer){
-      return IOERR_POSIX;
-    }
-    return sizeof(buffer);
+    return fin - init;
 }
 
 int file_info(char *path, void *buffer, size_t bufbytes)
@@ -45,7 +44,7 @@ int file_info(char *path, void *buffer, size_t bufbytes)
     time_t accessed = st.st_atime;
     time_t modified = st.st_mtime;
     char type = (S_ISDIR(st.st_mode)) ? 'd' : 'f';
-    sprintf((char*)buffer, "Size:%jd Accessed:%jd Modified:%jd Type:%c", (intmax_t)size, (intmax_t)accessed, (intmax_t)modified, type);
+    sprintf((char*)buffer, "Size:%lld Accessed:%lld Modified:%lld Type:%c", size, (long long)accessed, (long long)modified, type);
     fclose(file_ptr);
     return 0;
 }
