@@ -16,7 +16,7 @@
 
 int file_read(char *path, int offset, void *buffer, size_t bufbytes)
 {
-    if(path && buffer && bufbytes)
+    if(path == NULL || buffer == NULL || bufbytes <= 0)
       return IOERR_INVALID_ARGS;
     FILE* file_ptr;
     file_ptr = fopen(path, "r");
