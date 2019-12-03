@@ -139,7 +139,14 @@ int dir_list(char *path, void *buffer, size_t bufbytes)
 
 int file_checksum(char *path)
 {
-    return IOERR_NOT_YET_IMPLEMENTED;
+    if(path == NULL)
+      return IOERR_INVALID_ARGS;
+    char buf[10000];
+    long int len = file_read(path,0,buf,10000);
+    if(len <= 0)
+      return len;
+    unsigned short chck = checksum(buf, len, 0);
+    return chck;
 }
 
 int dir_checksum(char *path)
