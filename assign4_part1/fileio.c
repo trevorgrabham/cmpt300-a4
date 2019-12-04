@@ -7,6 +7,7 @@
 #include <errno.h>
 #include "restart.h"
 #include "fileio.h"
+#include <string.h>
 
 #if 1
 #define VERBOSE(p) (p)
@@ -152,5 +153,27 @@ int file_checksum(char *path)
 
 int dir_checksum(char *path)
 {
-    return IOERR_NOT_YET_IMPLEMENTED;
+    int chck = 0;
+    if(path == NULL)
+      return IOERR_INVALID_ARGS;
+    DIR* mainDir;
+    mainDir = openDir(path);
+    if(mainDir == NULL)
+      return IOERR_INVALID_PATH;
+    char* currPath = path;
+    struct dirent* entry;
+    entry = readdir(mainDir);
+    while(entry){
+      struct stat st;
+      printf("currPath: %s\nentry: %s\n", currPath, entry->d_name);
+      stat(strcat(currPath,entry->d_name), &st);
+      if(S_ISDIR(st.st_mode)){
+        chck += dir_checksum(currPath);
+      } else {
+        chck += file_checksum(currPath);
+      }
+      entry = readdir(mainDir);
+    }
+    closedir(mainDir);
+    return chck;
 }
