@@ -97,7 +97,6 @@ int test_file_info(int argc, const char **argv)
     int one_day = 86400;
     int jan1_2005 = 1104534000;	// seconds since epoch
     int jan3_2005 = jan1_2005 + one_day + one_day;
-    printf("modified: %ld\tjan1: %d\n", modified, jan1_2005 );
 
     quit_if(modified < jan1_2005 || modified > jan1_2005 + one_day);
     quit_if(accessed < jan3_2005 || accessed > jan3_2005 + one_day);

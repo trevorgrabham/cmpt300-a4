@@ -47,7 +47,7 @@ int file_info(char *path, void *buffer, size_t bufbytes)
     time_t modified = st.st_mtime;
     char *type = (S_ISDIR(st.st_mode)) ? "d" : "f";
     sprintf((char*)buffer, "Size:%d Accessed:%d Modified:%d Type %s", (int)size, (int)accessed, (int)modified, type);
-    printf("Size:%d Accessed:%d Modified:%d Type:%s", (int)size, (int)accessed, (int)modified, type);
+    // debugging :  printf("Size:%d Accessed:%d Modified:%d Type:%s", (int)size, (int)accessed, (int)modified, type);
     fclose(file_ptr);
     return 0;
 }
@@ -157,20 +157,26 @@ int dir_checksum(char *path)
     if(path == NULL)
       return IOERR_INVALID_ARGS;
     DIR* mainDir;
-    mainDir = openDir(path);
+    mainDir = opendir(path);
     if(mainDir == NULL)
       return IOERR_INVALID_PATH;
-    char* currPath = path;
+    char currPath[1000], nextPath[1000];
+    strcpy(currPath, path);
     struct dirent* entry;
     entry = readdir(mainDir);
     while(entry){
+      if(!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")){
+        entry = readdir(mainDir);
+        continue;
+      }
       struct stat st;
-      printf("currPath: %s\nentry: %s\n", currPath, entry->d_name);
-      stat(strcat(currPath,entry->d_name), &st);
+      sprintf(nextPath, "%s/%s", currPath, entry->d_name);
+      stat(nextPath, &st);
       if(S_ISDIR(st.st_mode)){
-        chck += dir_checksum(currPath);
+        chck = checksum(entry->d_name, strlen(entry->d_name), chck);
+        chck += dir_checksum(nextPath);
       } else {
-        chck += file_checksum(currPath);
+        chck += file_checksum(nextPath);
       }
       entry = readdir(mainDir);
     }
