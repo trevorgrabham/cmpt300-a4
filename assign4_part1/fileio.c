@@ -44,8 +44,9 @@ int file_info(char *path, void *buffer, size_t bufbytes)
     long long size = st.st_size;
     time_t accessed = st.st_atime;
     time_t modified = st.st_mtime;
-    char type = (S_ISDIR(st.st_mode)) ? 'd' : 'f';
-    sprintf((char*)buffer, "Size:%lld Accessed:%lld Modified:%lld Type:%c", size, (long long)accessed, (long long)modified, type);
+    char *type = (S_ISDIR(st.st_mode)) ? "d" : "f";
+    sprintf((char*)buffer, "Size:%d Accessed:%d Modified:%d Type %s", (int)size, (int)accessed, (int)modified, type);
+    printf("Size:%d Accessed:%d Modified:%d Type:%s", (int)size, (int)accessed, (int)modified, type);
     fclose(file_ptr);
     return 0;
 }
