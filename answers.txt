@@ -1,0 +1,17 @@
+1)  The code attempts to read Chunk bytes from the file described by fp and
+    place them into the buffer. It will return and store in words, the number of
+    bytes read on success and -1 on failure so we are checking if words is equal
+    to -1 to see if any errors were encountered while trying to read from the
+    file.
+
+2)  The above is an example of a block read. That block will contain up to
+    Chunk bytes. On success, words will contain the number of bytes read from
+    the file. On failure the value of words will be -1. If the value of words is
+    less than Chunk then it indicates that we have reached the EOF.
+
+3)  The flag value is going to be a combination of the O_CREAT, O_WRONLY, and
+    O_APPEND flags. This is achieved with the bitwise or operator |. This new
+    flag will open the file in append mode, and will create a new file if the
+    file does not already exist.
+
+4)  

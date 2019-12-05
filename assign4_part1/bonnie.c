@@ -123,7 +123,7 @@ int bonnie_main(int argc, char **argv)
 
     if (size < 1) {
 	usage();
-    } 
+    }
 
     /*
        CHECK SYSTEM CAPABILITY:
@@ -277,7 +277,7 @@ int bonnie_main(int argc, char **argv)
 /*		1. Print in the monitor the results from the         */
 /*              operations the program supports.                     */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void report(char *machine, off_t size)
@@ -345,13 +345,16 @@ static void report(char *machine, off_t size)
 /*		returns)         	                             */
 /*		3. Check stream					     */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
+
+// fd now contains the file descriptor and stream is now a pointer to the file
 
 static void newfile(char *name, int *fd, FILE ** stream, int create)
 {
     if (create) {
 	if (unlink(name) == -1 && *fd != -1)
+  // problem unlinking and fd is already in use
 	    io_error("unlink");
 	*fd = open(name, O_RDWR | O_CREAT | O_EXCL, 0777);
     } else
@@ -377,7 +380,7 @@ static void newfile(char *name, int *fd, FILE ** stream, int create)
 /*		4. Close file                                        */
 /*		5. Call get_delta_t to find the performance of putc  */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void fill_file_char()
@@ -413,7 +416,7 @@ static void fill_file_char()
 /*		4. Close file                                        */
 /*		5. Call get_delta_t to find the performance of putc  */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 static void fill_file_block()
 {
@@ -462,30 +465,44 @@ static void fill_file_block()
 /*		7. Close file                                        */
 /*		8. Call get_delta_t to find the performance of putc  */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
+
+
+// change the newfile function and the read and write calls
 
 static void file_read_rewrite_block()
 {
     fprintf(stderr, "FUNCTION file_read_rewrite() start...");
+    // create a new file
     newfile(name, &fd, &stream, 0);
+    // fd is a pointer to the file descriptor and stream is now a file pointer to the new file
     if (lseek(fd, (off_t) 0, 0) == (off_t) - 1)
 	io_error("lseek(2) before rewrite");
+  // goes to the beginning of file
     fprintf(stderr, "Rewriting");
     timestamp();
+    // starts the timer
     bufindex = 0;
     if ((words = read(fd, (char *) buf, Chunk)) == -1)
+    // reads Chunk number of bytes and stores the number of bytes read in words
 	io_error("rewrite read");
 
     while (words == Chunk) {
+      // while we haven't reached eof
 	if (bufindex == Chunk / IntSize)
 	    bufindex = 0;
+      // if we reached the end of the buffer, loop back to the beginning
 	buf[bufindex++]++;
+  // change a single character in the buffer before writing back
 	if (lseek(fd, (off_t) - words, 1) == -1)
+    // move back to where we just read from
 	    io_error("relative lseek(2)");
 	if (write(fd, (char *) buf, words) == -1)
+    // write back what we just read plus the alteration
 	    io_error("re write(2)");
 	if ((words = read(fd, (char *) buf, Chunk)) == -1)
+    // read a new chunck
 	    io_error("rwrite read");
     }
 
@@ -511,7 +528,7 @@ static void file_read_rewrite_block()
 /*		7. Close file                                        */
 /*		8. Call get_delta_t to find the performance of getc  */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void file_read_getc()
@@ -554,7 +571,7 @@ static void file_read_getc()
 /*		7. Close file                                        */
 /*		8. Call get_delta_t to find the performance of getc  */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void file_read_chunk()
@@ -583,7 +600,7 @@ static void file_read_chunk()
 /* PROCESS:                                                          */
 /*		1. Presents all the options the program has          */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void usage()
@@ -601,7 +618,7 @@ static void usage()
 /*		1. Call time_so_far() and store it in last_timestamp */
 /*		2. Call cpu_so_far() and store it in last_cpustamp   */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void timestamp()
@@ -624,7 +641,7 @@ static void timestamp()
 /*          of the global variable last_cpustamp obtaining the       */
 /*          amount of CPU procedure spent.                           */
 /*********************************************************************/
-/* OUTPUT: doesn´t return any value because it is void               */
+/* OUTPUT: doesnï¿½t return any value because it is void               */
 /*********************************************************************/
 
 static void get_delta_t(test)
