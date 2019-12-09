@@ -487,7 +487,7 @@ static void file_read_rewrite_block()
     // starts the timer
     bufindex = 0;
     /* new var */int offset = 0;
-    if ((words = file_read(name, offset,(char *) buf, Chunk) <= -1))
+    if ((words = file_read(name, offset,(char *) buf, Chunk)) <= -1)
     // reads Chunk number of bytes and stores the number of bytes read in words
 	io_error("rewrite read");
   printf("\nWORDS: %d\nCHUNK: %d\n",words, Chunk);
