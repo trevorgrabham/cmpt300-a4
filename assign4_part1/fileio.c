@@ -61,7 +61,7 @@ int file_write(char *path, int offset, void *buffer, size_t bufbytes)
     if(!file_ptr)
       return IOERR_INVALID_PATH;
     fseek(file_ptr, offset, SEEK_SET);
-    int wrote = fwrite(buf, 1, bufbytes, file_ptr);
+    int wrote = fwrite(buffer, 1, bufbytes, file_ptr);
     fclose(file_ptr);
     if(DEBUG)
       printf("wrote: %d\n", wrote);
