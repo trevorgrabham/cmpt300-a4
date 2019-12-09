@@ -23,31 +23,33 @@
 
 6)  characters read is much slower than blocks read. I would assume that this
     would be the case due to the higher number of system calls required to
-    write each character seperately.
+    write each character separately.
 
-9)  char b[255], dots[sizeof(b)];
+7)      
+
+9)  char b[255], dots[sizeof(b)];     // creates two character arrays, both of size 255
     int bytes_read, i;
-    setup();
-    quit_if(IOERR_INVALID_ARGS != file_read(HELLO_FILE, 0, b, 0));
+    setup();                          // calls the setup function, creating the files that will be needed if they don't already exist
+    quit_if(IOERR_INVALID_ARGS != file_read(HELLO_FILE, 0, b, 0));    // quits the test if we don't return an error when we try and test with buffer of len 0
     quit_if(IOERR_INVALID_ARGS !=
-      file_read(HELLO_FILE, 0, NULL, sizeof(b)));
-    quit_if(IOERR_INVALID_ARGS != file_read(HELLO_FILE, -1, b, sizeof(b)));
-    quit_if(IOERR_INVALID_ARGS != file_read(NULL, 0, b, sizeof(b)));
+      file_read(HELLO_FILE, 0, NULL, sizeof(b)));   // quits if we don't return an error when we try and test with a NULL buffer
+    quit_if(IOERR_INVALID_ARGS != file_read(HELLO_FILE, -1, b, sizeof(b)));   // quits if we don't return an error when we try and test with a negative offset
+    quit_if(IOERR_INVALID_ARGS != file_read(NULL, 0, b, sizeof(b)));    // quits if we don't return an error when we try and test with a NULL path
     quit_if(IOERR_INVALID_PATH !=
-      file_read(NO_SUCH_FILE, 0, b, sizeof(b)));
-    bytes_read = file_read(HELLO_FILE, 0, b, sizeof(b));
-    quit_if(bytes_read != 5);
-    quit_if(strncmp("Hello", b, 5));
-    bytes_read = file_read(HELLO_FILE, 1, b, sizeof(b));
-    quit_if(bytes_read != 4);
-    quit_if(strncmp("ello", b, 4));
-    bytes_read = file_read(HELLO_FILE, -1, b, sizeof(b));
+      file_read(NO_SUCH_FILE, 0, b, sizeof(b)));    // quits if we do not return an error when we try and test with an incorrect path
+    bytes_read = file_read(HELLO_FILE, 0, b, sizeof(b));    // properly supplies the arguments
+    quit_if(bytes_read != 5);   // quits if we did not indicate that we read the proper number of bytes
+    quit_if(strncmp("Hello", b, 5));    // quits if we didn't read the proper text from the file
+    bytes_read = file_read(HELLO_FILE, 1, b, sizeof(b));    // reads the same file, but skips the first letter
+    quit_if(bytes_read != 4);   // quits if we did not indicate that we read the proper number of bytes
+    quit_if(strncmp("ello", b, 4));   // quits if we didn't read the proper text from the file
+    bytes_read = file_read(HELLO_FILE, -1, b, sizeof(b));   // tests again with improper input (same as previous)
     quit_if(bytes_read >= 0);
 
     for (i = 0; i < sizeof(dots); i++) {
     b[i] = dots[i] = i == sizeof(dots) - 1 ? '\0' : '.';
     }
 
-    bytes_read = file_read(BIG_FILE, 1, b, sizeof(b));
-    quit_if(bytes_read!= sizeof(b) );
-    quit_if(!memcmp(b, dots, sizeof(b)));
+    bytes_read = file_read(BIG_FILE, 1, b, sizeof(b));    // reads from a file that is larger than the size of b
+    quit_if(bytes_read!= sizeof(b) );     // quit if we didn't read as much as possible of the file
+    quit_if(!memcmp(b, dots, sizeof(b)));   // try and copy dots into b and quit if there was an error

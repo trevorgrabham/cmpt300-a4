@@ -1,6 +1,6 @@
 LMP1: I/O and Filesystems
 =========================
- 
+
 Welcome to LMP1, the first long MP.  LMP1 is the first stage of a project aimed
 at creating a simple yet functional networked filesystem.  In this MP, you will
 learn about and use POSIX file system calls, while subsequent LMPs will
