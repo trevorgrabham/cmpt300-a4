@@ -492,7 +492,7 @@ static void file_read_rewrite_block()
 	io_error("rewrite read");
   printf("\nWORDS: %d\nCHUNK: %d\n",words, Chunk);
 // have to do -1 now because we need to take the null terminator into account
-    while (words == Chunk-1) {
+    while (words == Chunk) {
       // while we haven't reached eof
 	if (bufindex == Chunk / IntSize)
 	    bufindex = 0;
