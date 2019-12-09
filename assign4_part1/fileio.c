@@ -25,11 +25,9 @@ int file_read(char *path, int offset, void *buffer, size_t bufbytes)
       return IOERR_INVALID_PATH;
     }
     fseek(file_ptr, offset, SEEK_SET);
-    long int init = ftell(file_ptr);
-    fgets((char*)buffer, bufbytes, file_ptr);
-    long int fin = ftell(file_ptr);
+    size_t read = fread(buffer, 1, bufbytes, file_ptr);
     fclose(file_ptr);
-    return fin-init;
+    return read;
 }
 
 int file_info(char *path, void *buffer, size_t bufbytes)

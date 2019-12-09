@@ -69,7 +69,8 @@ int test_file_read(int argc, const char **argv)
     }
 
     bytes_read = file_read(BIG_FILE, 1, b, sizeof(b));
-    quit_if(bytes_read!= sizeof(b) -1 );          // changed because size of b adds in the null character which we don't read
+    printf("sizeof(b): %d\nbytes_read: %d\n", sizeof(b), bytes_read);
+    quit_if(bytes_read!= sizeof(b) );          // changed because size of b adds in the null character which we don't read
     quit_if(!memcmp(b, dots, sizeof(b)));
 
     return 0;
