@@ -15,7 +15,7 @@
 #define VERBOSE(p) (0)
 #endif
 
-int DEBUG = 1;
+int DEBUG = 0;
 
 int file_read(char *path, int offset, void *buffer, size_t bufbytes)
 {
@@ -57,7 +57,7 @@ int file_write(char *path, int offset, void *buffer, size_t bufbytes)
     if(path == NULL || offset < 0 || buffer == NULL || bufbytes <=0)
       return IOERR_INVALID_ARGS;
     FILE* file_ptr;
-    file_ptr = fopen(path, "a");
+    file_ptr = fopen(path, "w");
     if(!file_ptr)
       return IOERR_INVALID_PATH;
     fseek(file_ptr, offset, SEEK_SET);

@@ -490,7 +490,6 @@ static void file_read_rewrite_block()
     if ((words = file_read(name, offset,(char *) buf, Chunk)) <= -1)
     // reads Chunk number of bytes and stores the number of bytes read in words
 	io_error("rewrite read");
-  printf("\nWORDS: %d\nCHUNK: %d\n",words, Chunk);
 // have to do -1 now because we need to take the null terminator into account
     while (words == Chunk) {
       // while we haven't reached eof

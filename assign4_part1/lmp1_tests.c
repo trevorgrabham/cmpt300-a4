@@ -114,7 +114,7 @@ int test_file_write(int argc, const char **argv)
     quit_if(IOERR_INVALID_ARGS != file_write(NULL, 0, b, sizeof(b)));
     // Test new file
     quit_if(sizeof(b) != file_write(NEW_FILE, 0, b, sizeof(b)));
-    quit_if(strlen(b)  != file_read(NEW_FILE, 0, b2, sizeof(b2)));             // removed the +1 because we don't read the null character
+    quit_if(strlen(b) +1  != file_read(NEW_FILE, 0, b2, sizeof(b2)));             
     quit_if(strncmp(b, b2, strlen(b)));
     return 0;
 }
