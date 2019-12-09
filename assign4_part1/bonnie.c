@@ -475,39 +475,45 @@ static void file_read_rewrite_block()
 {
     fprintf(stderr, "FUNCTION file_read_rewrite() start...");
     // create a new file
-    newfile(name, &fd, &stream, 0);
+    /* old code  newfile(name, &fd, &stream, 0); */
+    /* new code */file_create(name, "", 0);
     // fd is a pointer to the file descriptor and stream is now a file pointer to the new file
+    /* old code ... no longer needed
     if (lseek(fd, (off_t) 0, 0) == (off_t) - 1)
-	io_error("lseek(2) before rewrite");
+	io_error("lseek(2) before rewrite"); */
   // goes to the beginning of file
     fprintf(stderr, "Rewriting");
     timestamp();
     // starts the timer
     bufindex = 0;
-    if ((words = read(fd, (char *) buf, Chunk)) == -1)
+    /* new var */int offset = 0;
+    if ((words = file_read(name, offset,(char *) buf, Chunk)) <= -1)
     // reads Chunk number of bytes and stores the number of bytes read in words
 	io_error("rewrite read");
-
-    while (words == Chunk) {
+// have to do -1 now because we need to take the null terminator into account
+    while (words == Chunk-1) {
       // while we haven't reached eof
 	if (bufindex == Chunk / IntSize)
 	    bufindex = 0;
       // if we reached the end of the buffer, loop back to the beginning
 	buf[bufindex++]++;
   // change a single character in the buffer before writing back
-	if (lseek(fd, (off_t) - words, 1) == -1)
+	/* old code... no longer needed
+  if (lseek(fd, (off_t) - words, 1) == -1)
     // move back to where we just read from
-	    io_error("relative lseek(2)");
-	if (write(fd, (char *) buf, words) == -1)
+	    io_error("relative lseek(2)"); */
+	if (file_write(name, offset, (char *) buf, words) <= -1)
     // write back what we just read plus the alteration
 	    io_error("re write(2)");
-	if ((words = read(fd, (char *) buf, Chunk)) == -1)
+  /* new code */offset += words;
+	if ((words = file_read(name, offset, (char *) buf, Chunk)) <= -1)
     // read a new chunck
 	    io_error("rwrite read");
     }
 
+    /* old code... no longer needed
     if (close(fd) == -1)
-	io_error("close after rewrite");
+	io_error("close after rewrite"); */
     get_delta_t(ReWrite);
     fprintf(stderr, "...done FUNCTION file_read_rewrite_block()\n");
 }
