@@ -15,6 +15,8 @@
 #define VERBOSE(p) (0)
 #endif
 
+int DEBUG = 1;
+
 int file_read(char *path, int offset, void *buffer, size_t bufbytes)
 {
     if(path == NULL || buffer == NULL || bufbytes <= 0 || offset < 0)
@@ -59,15 +61,11 @@ int file_write(char *path, int offset, void *buffer, size_t bufbytes)
     if(!file_ptr)
       return IOERR_INVALID_PATH;
     fseek(file_ptr, offset, SEEK_SET);
-    long int init = ftell(file_ptr);
-    fputs((char*)buffer, file_ptr);
-    if(ftell(file_ptr) == offset){
-      fclose(file_ptr);
-      return IOERR_POSIX;
-    }
-    long int bitsWrote = ftell(file_ptr) - init +1;
+    int wrote = fwrite(buf, 1, bufbytes, file_ptr);
     fclose(file_ptr);
-    return bitsWrote;
+    if(DEBUG)
+      printf("wrote: %d\n", wrote);
+    return wrote;
 }
 
 int file_create(char *path, char *pattern, int repeatcount)
