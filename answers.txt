@@ -27,7 +27,28 @@ Submission for Trevor Grabham and Kevin Grandham
     would be the case due to the higher number of system calls required to
     write each character separately.
 
-7)
+7)  home directory:
+
+-------Sequential Output-------- ---Sequential Input-- --Random--
+-Per Char- --Block--- -Rewrite-- -Per Char- --Block--- --Seeks---
+Machine    MB K/sec %CPU K/sec %CPU K/sec %CPU K/sec %CPU K/sec %CPU  /sec %CPU
+100 36314 42.3 193658 20.4 2670282 41.7 92617 88.6 2660362 52.0 125505.9 37.7
+
+
+tmp:
+
+-------Sequential Output-------- ---Sequential Input-- --Random--
+-Per Char- --Block--- -Rewrite-- -Per Char- --Block--- --Seeks---
+Machine    MB K/sec %CPU K/sec %CPU K/sec %CPU K/sec %CPU K/sec %CPU  /sec %CPU
+100 65482 79.0 284665 31.1 3877025 60.6 88073 86.4 3171358 61.9 187934.6 75.2
+
+    As you can see, the Sequential output was about 1.5x faster for the tmp
+    directory, so writing seems to be effected more by the network.
+
+8)  On an incomplete read, bonnie will not get a delta value, so it will not
+    give an evalutation. This is good for a benchmark, as we want to benchmark
+    standard workloads, not exceptions.
+
 
 9)  char b[255], dots[sizeof(b)];     // creates two character arrays, both of size 255
     int bytes_read, i;
