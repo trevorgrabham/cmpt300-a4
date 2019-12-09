@@ -1,3 +1,5 @@
+Submission for Trevor Grabham and Kevin Grandham
+
 1)  The code attempts to read Chunk bytes from the file described by fp and
     place them into the buffer. It will return and store in words, the number of
     bytes read on success and -1 on failure so we are checking if words is equal
@@ -25,7 +27,7 @@
     would be the case due to the higher number of system calls required to
     write each character separately.
 
-7)      
+7)
 
 9)  char b[255], dots[sizeof(b)];     // creates two character arrays, both of size 255
     int bytes_read, i;
